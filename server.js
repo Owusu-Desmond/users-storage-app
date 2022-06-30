@@ -1,8 +1,16 @@
 const express =  require('express');
-const home = require('./routes/home')
+const home = require('./routes/home');
+const path = require('path');
+const PORT = 8080;
+
 const app = express()
 
 app.use('/', home);
 
-app.listen(8080);
-console.log("App running in http://localhost:8080");
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'hjs');
+
+app.listen(PORT, (err) => {
+    if (err) console.log(err);;
+    console.log(`App running in http://localhost:${PORT}`);
+});
