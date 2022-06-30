@@ -1,0 +1,22 @@
+{
+  "name": "users-storage-app",
+  "version": "1.0.0",
+  "description": "Users storage application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Owusu-Desmond/users-storage-app.git"
+  },
+  "author": "Desmond Owusu Ansah",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Owusu-Desmond/users-storage-app/issues"
+  },
+  "homepage": "https://github.com/Owusu-Desmond/users-storage-app#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
