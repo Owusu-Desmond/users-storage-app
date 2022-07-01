@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign Up to User storage to add your favourite items you want to purchase in the future">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <link rel="stylesheet" href="https://bootswatch.com/5/solar/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
     <title>Document</title>
 </head>
 
@@ -35,21 +37,21 @@
                 <form class="p-5 g-3 needs-validation" action="/register" method="post" novalidate>
                     <h2 class="text-primary text-center">Register</h2>
                     <div class="form-group">
-                        <label for="username" class="form-label">Username</label>
+                        <label for="username" class="form-label label-form">Username</label>
                         <input type="text" name="username" class="form-control" id="username" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="email" class="form-label">Email</label>
+                        <label for="email" class="form-label label-form">Email</label>
                         <input type="email" name="email" class="form-control" id="email" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
                     </div>
                     <div class="form-group mt-4">
-                        <label for="password" class="form-label">Password</label>
+                        <label for="password" class="form-label label-form">Password</label>
                         <input type="password" name="password" class="form-control" id="password" required>
                         <div class="valid-feedback">
                             Looks good!
@@ -58,7 +60,7 @@
                     <div class="mt-4">
                         <div class="form-check mt-4">
                             <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-                            <label class="form-check-label" for="invalidCheck">
+                            <label class="form-check-label label-form" for="invalidCheck">
                                 Agree to terms and conditions
                             </label>
                             <div class="invalid-feedback">
@@ -67,7 +69,7 @@
                         </div>
                     </div>
                     <div class="mt-4">
-                        <button class="btn btn-primary" type="submit">Submit</button>
+                        <button class="btn btn-primary register-text" type="submit">Submit</button>
                     </div>
                 </form>
             </div>
