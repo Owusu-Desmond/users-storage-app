@@ -4,7 +4,7 @@ const register = require('./routes/register');
 const login = require('./routes/login');
 const mongoose = require('mongoose');
 const path = require('path');
-const PORT = 8080;
+const PORT = PORT = process.env.PORT || 8080;
 
 // connection to database 
 mongoose.connect("mongodb://localhost/users_storage", (err, data) => {
@@ -26,6 +26,6 @@ app.use('/register', register),
 app.use('/login', login),
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(PORT || 80, (err) => {
+app.listen(PORT, (err) => {
     if (err) console.log(err);;
 });
