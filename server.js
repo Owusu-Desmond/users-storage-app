@@ -28,5 +28,4 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(PORT || 80, (err) => {
     if (err) console.log(err);;
-    console.log(`App running in http://localhost:${PORT}`);
 });
