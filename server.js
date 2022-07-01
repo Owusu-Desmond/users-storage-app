@@ -1,14 +1,15 @@
 const express = require('express');
 const home = require('./routes/home');
 const register = require('./routes/register');
+const login = require('./routes/login');
 const mongoose = require('mongoose');
 const path = require('path');
 const PORT = 8080;
 
 // connection to database 
-mongoose.connect("mongodb//localhost/users_storage", (err, data) => {
+mongoose.connect("mongodb://localhost/users_storage", (err, data) => {
     if (err) {
-        console.log("Could not connect to database");
+        console.log(err);
         return
     }
     else console.log("Connection to database sucessfull");
@@ -21,7 +22,8 @@ app.set('view engine', 'hjs');
 app.use(express.json());
 app.use(express.urlencoded({extended : false}))
 app.use('/', home);
-app.use('/register', register)
+app.use('/register', register),
+app.use('/login', login),
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(PORT, (err) => {

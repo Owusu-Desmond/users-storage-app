@@ -19,54 +19,33 @@
                 <a class="navbar-brand fs-3" href="#"><i class="bi bi-people-fill fs-2"></i> Users storage</a>
                 <ul class="nav nav-tabs fs-5">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link active text-primary" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
+                        <a class="nav-link active" href="/login">Login</a>
                     </li>
                 </ul>
             </div>
         </nav>
-        <h1 class="text-center my-4 ">Welcome to the Users storage</h1>
     </header>
     <main>
-        <section class="container d-flex justify-content-center">
-            <div class="card w-75 d-flex justify-content-center">
-                <form class="p-5 g-3 needs-validation" action="/register" method="post" novalidate>
-                    <h2 class="text-primary text-center">Register</h2>
-                    <div class="form-group">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" id="email" required>
-                        <div class="valid-feedback">
-                            Looks good!
-                        </div>
-                    </div>
-                    <div class="form-group mt-4">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" id="password" required>
-                        <div class="valid-feedback">
-                            Looks good!
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <div class="form-check mt-4">
-                            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-                            <label class="form-check-label" for="invalidCheck">
-                                Agree to terms and conditions
-                            </label>
-                            <div class="invalid-feedback">
-                                You must agree before submitting.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <button class="btn btn-primary" type="submit">Submit</button>
-                    </div>
-                </form>
+        <section class="container">
+            <h1 class="text-center text-primary my-5 ">Welcome to the Users storage</h1>
+            <p class="fs-3 text-center">Please continue to create or login into your account to visit your profile and
+                your stored items you
+                planned to purchace on your the schedule you specified!
+                <i class="text-primary   bi bi-emoji-smile-fill"></i>
+            </p>
+            <p class="fs-4 p-3 text-warning text-center">Don't hesitate to register if you haven't registered and keep your plans here .</p>
+            <div class="d-flex justify-content-center">
+                <a href="/register" class="btn btn-primary">Register</a>
             </div>
         </section>
-
     </main>
+    <footer class="position-absolute bottom-0 w-100 py-3 ps-5 bg-black">
+        &copy Copyright 2022 || All rights are reserved. <br>
+        Author : Desmond Owusu Ansah
+    </footer>
     <script src="./js/script.js"></script>
 </body>
 

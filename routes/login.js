@@ -23,7 +23,8 @@ router.post('/', (req, res , next) => {
 }) 
 
 router.get("/", (req, res, next) => {
-    res.render("register", null);
+    res.render("login", null);
 })
+
 
 module.exports = router;
