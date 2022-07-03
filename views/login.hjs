@@ -36,10 +36,11 @@
                     <h2 class="text-primary text-center">Login</h2>
                     <div class="form-group">
                         <label for="email" class="form-label label-form">Email</label>
-                        <input type="email" name="email" class="form-control" id="email" required>
+                        <input type="email" name="email" value="{{email}}" class="form-control" id="email" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
+                        <div class="text-danger">{{emailError}}</div>
                     </div>
                     <div class="form-group mt-4">
                         <label for="password" class="form-label label-form">Password</label>
@@ -47,6 +48,7 @@
                         <div class="valid-feedback">
                             Looks good!
                         </div>
+                        <div class="text-danger">{{passwordError}}</div>
                     </div>
                     <div class="mt-4">
                         <div class="form-check mt-4">
