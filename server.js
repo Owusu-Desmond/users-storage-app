@@ -7,7 +7,7 @@ const path = require('path');
 const MongoDB_URL = "mongodb+srv://desmond:desmond@cluster0.xcbpx.mongodb.net/?retryWrites=true&w=majority";
 
 // connection to database 
-mongoose.connect(MongoDB_URL || "mongodb://localhost/users_storage", (err, data) => {
+mongoose.connect(MongoDB_URL, (err) => {
     if (err) {
         console.log(err);
         return
