@@ -3,7 +3,7 @@ const User = require('../models/User');
 const router = express.Router();
 
 // create a response for the homepage
-router.post('/', (req, res , next) => {
+router.post('/register', (req, res , next) => {
     User.create(req.body, (err ,user) => {
         if(err){
             res.json(
@@ -22,7 +22,7 @@ router.post('/', (req, res , next) => {
     })
 }) 
 
-router.get("/", (req, res, next) => {
+router.get("/register", (req, res, next) => {
     res.render("register", null);
 })
 
