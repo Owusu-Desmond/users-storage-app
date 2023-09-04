@@ -8,8 +8,16 @@ const User = new mongoose.Schema({
     timestamp:{type: Date, default:Date.now()}
 });
 
+// hash password before saving to database
+User.pre("save", function (next) {
+    if(!this.isModified("password")) return next();
+    this.password = bcrypt.hashSync(this.password, 10);
+    next();
+})
+
 User.methods.isValidPassword = (password) => {
-    return bcrypt.compareSync(this.password, password)
+   getHashedPassword = bcrypt.hashSync(password, 10);
+   return bcrypt.compareSync(password, getHashedPassword); 
 }
 
 module.exports = mongoose.model("User", User);

@@ -13,13 +13,14 @@ const passport = require('passport');
 
 const MongodbStore = require('connect-mongodb-session')(session);
 const mongoose = require('mongoose');
+const { error } = require('console');
 
 const app = express();
 
 const store = new MongodbStore({
     uri: "mongodb://localhost/users_storage",
     collection: 'sessions'
-});
+})
 
 // catch errors when session is not stored in database
 store.on('error', (err) => {

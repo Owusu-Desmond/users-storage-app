@@ -35,8 +35,8 @@
                 <form class="p-5 g-3 needs-validation" action="/login" method="post" novalidate>
                     <h2 class="text-primary text-center">Login</h2>
                     <div class="form-group">
-                        <label for="email" class="form-label label-form">Email</label>
-                        <input type="email" name="email" class="form-control" id="email" required>
+                        <label for="email" class="form-label label-form">Usename or Email</label>
+                        <input type="text" name="usernameOrEmail" class="form-control" id="usernameOrEmail" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
