@@ -13,7 +13,6 @@ const passport = require('passport');
 
 const MongodbStore = require('connect-mongodb-session')(session);
 const mongoose = require('mongoose');
-const { error } = require('console');
 
 const app = express();
 
@@ -49,7 +48,7 @@ app.use(session({
 app.use(logger('dev'));
 
 app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'hjs');
+app.set('view engine', 'ejs');
 
 // cookie parser: used to parse cookies
 app.use(cookieParser());

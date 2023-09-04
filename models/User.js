@@ -15,9 +15,8 @@ User.pre("save", function (next) {
     next();
 })
 
-User.methods.isValidPassword = (password) => {
-   getHashedPassword = bcrypt.hashSync(password, 10);
-   return bcrypt.compareSync(password, getHashedPassword); 
+User.methods.isValidPassword = function (password) {
+   return bcrypt.compareSync(password, this.password); 
 }
 
 module.exports = mongoose.model("User", User);

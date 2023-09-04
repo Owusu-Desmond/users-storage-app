@@ -36,10 +36,23 @@
                     <h2 class="text-primary text-center">Login</h2>
                     <div class="form-group">
                         <label for="email" class="form-label label-form">Usename or Email</label>
-                        <input type="text" name="usernameOrEmail" class="form-control" id="usernameOrEmail" required>
+                        <input 
+                            type="text" 
+                            name="usernameOrEmail" 
+                            class="form-control" 
+                            id="usernameOrEmail"
+                            required
+                            <% if (usernameOrEmail) { %>
+                                value="<%= usernameOrEmail %>"
+                            <% } %>
+                        >
                         <div class="valid-feedback">
                             Looks good!
                         </div>
+                        <% if (error[0] === "Incorrect username or email") { %>
+                                <p class="text-danger"><%= error[0] %></p>
+                        <% } %>
+                      
                     </div>
                     <div class="form-group mt-4">
                         <label for="password" class="form-label label-form">Password</label>
@@ -47,6 +60,9 @@
                         <div class="valid-feedback">
                             Looks good!
                         </div>
+                        <% if (error[0] === "Incorrect password") { %>
+                                <p class="text-danger"><%= error[0] %></p>
+                        <% } %>
                     </div>
                     <div class="mt-4">
                         <div class="form-check mt-4">
