@@ -1,7 +1,6 @@
 const express = require('express');
 const home = require('./routes/home');
-const register = require('./routes/register');
-const login = require('./routes/login');
+const login = require('./routes/auth');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 
@@ -63,7 +62,6 @@ app.use(flash());
 app.use(express.json());
 app.use(express.urlencoded({extended : false}))
 app.use('/', home);
-app.use('/', register),
 app.use('/', login),
 app.use(express.static(path.join(__dirname, 'public')));
 

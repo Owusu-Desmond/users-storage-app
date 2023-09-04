@@ -87,4 +87,18 @@ router.post("/logout", (req, res, next) => {
     )
 })
 
+router.post('/register', (req, res , next) => {
+    User.create(req.body, (err ,user) => {
+        if(err){
+            console.log(err);
+            return next(err)
+        }
+        res.redirect('/login')
+    })
+}) 
+
+router.get("/register", (req, res, next) => {
+    res.render("register", null);
+})
+
 module.exports = router;
