@@ -1,6 +1,8 @@
 const express = require('express');
 const passport = require('passport')
 const LocalPassport = require('passport-local')
+const MagicLinkStrategy = require('passport-magic-link').Strategy;
+const sendgrid = require('@sendgrid/mail');
 const User = require('../models/User');
 const router = express.Router();
 
@@ -24,6 +26,40 @@ passport.use( new LocalPassport( {
         })
     })
 )
+
+sendgrid.setApiKey(process.env['SENDGRID_API_KEY'])
+
+// Magic Link Strategy for passport
+// send email with token to user, verify user after token is sent
+passport.use(new MagicLinkStrategy({
+        secret: 'random secret',
+        userFields: ['email'],
+        tokenField: 'token',
+        verifyUserAfterToken: true
+    }, function send (user, token) {
+        let link = 'localhost:8080/register/email/verify?token=' + token
+        const message = {
+            to: user.email,
+            from: process.env['EMAIL'],
+            subject: "SignUp to User Storage App",
+            text: 'Hello! Click the link below to finish signing in to Todos.\r\n\r\n' + link,
+            html: '<h3>Hello!</h3><p>Click the link below to finish signing in to Todos.</p><p><a href="' + link + '">Sign Up</a></p>',
+        }
+        return sendgrid.send(message)
+    }, function verify (user) {
+        return User.findOne({email: user.email}).then((user) => {
+            if(!user) {
+                return User.create({
+                    username: user.username,
+                    email: user.email,
+                    password: user.password
+                })
+            }
+            // if user exists, reject the promise
+            return Promise.reject(new Error('User already exists'))
+        })
+    }
+))
 
 // serialize user
 passport.serializeUser((user, done) => {
@@ -87,15 +123,22 @@ router.post("/logout", (req, res, next) => {
     )
 })
 
-router.post('/register', (req, res , next) => {
-    User.create(req.body, (err ,user) => {
-        if(err){
-            console.log(err);
-            return next(err)
-        }
-        res.redirect('/login')
-    })
-}) 
+router.post('/register', passport.authenticate('magiclink', {
+        action: 'requestToken',
+        failureRedirect: '/register',
+    }), (req, res, next) => {
+        res.redirect('/register/email/check')
+    }
+)
+
+router.get('/register/email/check', (req, res, next) => {
+    res.render('check_email')
+})
+
+router.get('/login/email/verify', passport.authenticate('magiclink', {
+    successReturnToOrRedirect: '/',
+    failureRedirect: '/login'
+}));
 
 router.get("/register", (req, res, next) => {
     res.render("register", null);

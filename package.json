@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Owusu-Desmond/users-storage-app#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.1.1",
     "connect-flash": "^0.1.1",
     "connect-mongodb-session": "^3.1.1",
@@ -29,6 +30,7 @@
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "passport-magic-link": "^2.1.0",
     "session": "^0.1.0"
   }
 }
