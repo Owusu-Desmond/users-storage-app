@@ -2,6 +2,7 @@ const express = require('express');
 const passport = require('passport')
 const LocalPassport = require('passport-local')
 const MagicLinkStrategy = require('passport-magic-link').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const sendgrid = require('@sendgrid/mail');
 const User = require('../models/User');
 const router = express.Router();
@@ -60,6 +61,31 @@ passport.use(new MagicLinkStrategy({
         })
     }
 ))
+
+// Google Strategy for passport
+passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env['GOOGLE_CLIENT_ID'],
+        clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
+        callbackURL: process.env['GOOGLE_CALLBACK_URL']
+      }, (accessToken, refreshToken, profile, done) => {
+        User.findOne({ googleId: profile.id }, (err, user) => {
+          if (err) return done(err);
+          if (user) return done(null, user);
+          const newUser = new User({
+            googleId: profile.id,
+            username: profile.displayName,
+            email: profile.emails[0].value,s
+          });
+          newUser.save(err => {
+            if (err) return done(err);
+            done(null, newUser);
+          });
+        });
+      }
+    )
+);
 
 // serialize user
 passport.serializeUser((user, done) => {
@@ -143,5 +169,15 @@ router.get('/login/email/verify', passport.authenticate('magiclink', {
 router.get("/register", (req, res, next) => {
     res.render("register", null);
 })
+
+
+// Route to initiate Google OAuth authentication
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+
+// Callback route to handle Google OAuth callback
+router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+    res.redirect('/dashboard')
+  });
 
 module.exports = router;
