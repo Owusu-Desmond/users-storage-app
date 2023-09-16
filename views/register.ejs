@@ -33,22 +33,49 @@
     </header>
     <main class="py-5">
         <section class="container d-flex justify-content-center">
+            <% if (error[0] === "Error sending email") { %>
+                <p class="text-danger"><%= error[0] %></p>
+            <% } %>
             <div class="card w-75 d-flex justify-content-center">
                 <form class="p-5 g-3 needs-validation" action="/register" method="post" novalidate>
                     <h2 class="text-primary text-center">Register</h2>
                     <div class="form-group">
                         <label for="username" class="form-label label-form">Username</label>
-                        <input type="text" name="username" class="form-control" id="username" required>
+                        <input 
+                            type="text"
+                            name="username" 
+                            class="form-control" 
+                            id="username" 
+                            required
+                            <% if (username) { %>
+                                value="<%= username %>"
+                            <% } %>
+                        >
                         <div class="valid-feedback">
                             Looks good!
                         </div>
+                        <% if (error[0] === "Username already exists") { %>
+                            <p class="text-danger"><%= error[0] %></p>
+                        <% } %>
                     </div>
                     <div class="form-group">
                         <label for="email" class="form-label label-form">Email</label>
-                        <input type="email" name="email" class="form-control" id="email" required>
+                        <input 
+                            type="email" 
+                            name="email" 
+                            class="form-control" 
+                            id="email" 
+                            required
+                            <% if (email) { %>
+                                value="<%= email %>"
+                            <% } %>
+                        >
                         <div class="valid-feedback">
                             Looks good!
                         </div>
+                        <% if (error[0] === "Email already exists") { %>
+                            <p class="text-danger"><%= error[0] %></p>
+                        <% } %>
                     </div>
                     <div class="form-group mt-4">
                         <label for="password" class="form-label label-form">Password</label>

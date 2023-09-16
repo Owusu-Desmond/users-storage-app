@@ -3,7 +3,7 @@ const passport = require('passport')
 const LocalPassport = require('passport-local')
 const MagicLinkStrategy = require('passport-magic-link').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const sendgrid = require('@sendgrid/mail');
+const nodemailer = require('nodemailer');
 const User = require('../models/User');
 const router = express.Router();
 
@@ -28,41 +28,84 @@ passport.use( new LocalPassport( {
     })
 )
 
-sendgrid.setApiKey(process.env['SENDGRID_API_KEY'])
+const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: process.env['EMAIL'],
+      pass: process.env['EMAIL_PASSWORD']
+    }
+});
 
 // Magic Link Strategy for passport
-// send email with token to user, verify user after token is sent
 passport.use(new MagicLinkStrategy({
-        secret: 'random secret',
-        userFields: ['email'],
-        tokenField: 'token',
-        verifyUserAfterToken: true
-    }, function send (user, token) {
-        let link = 'localhost:8080/register/email/verify?token=' + token
-        const message = {
-            to: user.email,
-            from: process.env['EMAIL'],
-            subject: "SignUp to User Storage App",
-            text: 'Hello! Click the link below to finish signing in to Todos.\r\n\r\n' + link,
-            html: '<h3>Hello!</h3><p>Click the link below to finish signing in to Todos.</p><p><a href="' + link + '">Sign Up</a></p>',
-        }
-        return sendgrid.send(message)
-    }, function verify (user) {
-        return User.findOne({email: user.email}).then((user) => {
-            if(!user) {
-                return User.create({
-                    username: user.username,
-                    email: user.email,
-                    password: user.password
-                })
+    secret: 'random secret',
+    userFields: ['username', 'email', 'password'],
+    tokenField: 'token',
+    verifyUserAfterToken: true,
+    passReqToCallbacks: true
+}, async (req, user, token) => {
+    let link = `http://localhost:8080/register/email/verify?token=${token}`;
+    const mailOptions = {
+        from: process.env['EMAIL'],
+        to: user.email,
+        subject: 'Sign Up to User Storage App',
+        text: `Hello! Click the link below to finish signing in to Todos.\r\n\r\n${link}`,
+        html: `<p>Hello! Click the link below to finish signing in to Todos.</p><p><a href="${link}">Sign Up</a></p>`,
+    };
+    return new Promise( async (resolve, reject) => {
+        try {
+            // Store the input value in the session
+            req.session.previousUsername = user.username;
+            req.session.previousEmail = user.email;
+
+            const existingUser = await User.findOne({
+                $or: [{ username: user.username }, { email: user.email }],
+            });
+            
+            if (existingUser) {
+                if (existingUser.username === user.username) {
+                    req.flash('error', 'Username already exists');
+                }
+                if (existingUser.email === user.email) {
+                    req.flash('error', 'Email already exists');
+                }
+                reject();
+            } else {
+                transporter.sendMail(mailOptions, (err, info) => {
+                    if (err) {
+                        req.flash('error', 'Error sending email');
+                        console.log('Error sending email: ' + err.message);
+                        reject();
+                    } else {
+                        req.flash('success', `Email sent to ${user.email}`);
+                        console.log("Email sent: " + info.response);
+                        resolve();
+                    }
+                });
             }
-            // if user exists, reject the promise
-            return Promise.reject(new Error('User already exists'))
-        })
+        } catch (err) {
+            reject(err);
+        }
+    })
+}, async (req, user) => {
+        try {
+            const newUser = new User({
+                username: user.username,
+                email: user.email,
+                password: user.password
+            });
+    
+            await newUser.save();
+            return newUser;
+        } catch (err) {
+            req.flash('error', 'Error creating user');
+            throw err;
+        }
     }
-))
+)) 
 
 // Google Strategy for passport
+
 passport.use(
     new GoogleStrategy(
       {
@@ -76,7 +119,7 @@ passport.use(
           const newUser = new User({
             googleId: profile.id,
             username: profile.displayName,
-            email: profile.emails[0].value,s
+            email: profile.emails[0].value
           });
           newUser.save(err => {
             if (err) return done(err);
@@ -108,7 +151,6 @@ router.post("/login", (req, res, next) => {
 
     passport.authenticate('local', (err, user, info) => {
         if(err) {
-            console.log(err);
             console.log("Error authenticating user");
             return next(err)
         }
@@ -152,24 +194,35 @@ router.post("/logout", (req, res, next) => {
 router.post('/register', passport.authenticate('magiclink', {
         action: 'requestToken',
         failureRedirect: '/register',
+        failureFlash: true,
+        successFlash: true,
+
     }), (req, res, next) => {
-        res.redirect('/register/email/check')
+        if (req.flash('success').length > 0) return res.redirect('/register/email/check');
+        res.redirect('/register')
     }
 )
 
 router.get('/register/email/check', (req, res, next) => {
+    if(req.isAuthenticated()) return res.redirect('./dashboard')
     res.render('check_email')
 })
 
-router.get('/login/email/verify', passport.authenticate('magiclink', {
-    successReturnToOrRedirect: '/',
-    failureRedirect: '/login'
-}));
+router.get('/register/email/verify', passport.authenticate('magiclink', {
+    successReturnToOrRedirect: '/dashboard',
+    failureRedirect: '/register',
+    failureFlash: true
+}))
 
 router.get("/register", (req, res, next) => {
-    res.render("register", null);
+    if(req.isAuthenticated()) return res.redirect('./dashboard')
+    const error = req.flash('error')
+    const username = req.session.previousUsername;
+    const email = req.session.previousEmail;
+    delete req.session.previousUsername;
+    delete req.session.previousEmail;
+    res.render("register", {error: error, username: username, email: email})
 })
-
 
 // Route to initiate Google OAuth authentication
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -177,7 +230,8 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 
 
 // Callback route to handle Google OAuth callback
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+    if(req.isAuthenticated()) return res.redirect('./dashboard')
     res.redirect('/dashboard')
-  });
+});
 
 module.exports = router;
